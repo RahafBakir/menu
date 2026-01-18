@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smash N' Cup Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF4D00;
+            --secondary: #282828;
+            --bg: #0f0f0f;
+            --text: #ffffff;
+            --accent: #ff8c00;
+            --danger: #ff3333;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            line-height: 1.6;
+            padding-bottom: 120px;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=80');
+            background-size: cover; background-position: center; height: 250px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; border-bottom: 4px solid var(--primary);
+        }
+
+        .hero h1 { font-size: 2.5rem; margin: 0; color: var(--primary); letter-spacing: 2px; }
+        .hero p { margin: 5px 0; font-weight: 600; }
+
+        .container { padding: 20px; max-width: 800px; margin: auto; }
+
+        .category-header {
+            display: flex; align-items: center; margin: 40px 0 20px; padding: 10px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            border-radius: 8px;
+        }
+        .category-header h2 { margin: 0; font-size: 1.4rem; text-transform: uppercase; }
+
+        .menu-card {
+            background: var(--secondary); border-radius: 15px; margin-bottom: 15px;
+            padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 1px solid #333;
+        }
+
+        .item-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .item-title { font-weight: 700; font-size: 1.1rem; color: var(--primary); }
+        .item-arabic { display: block; direction: rtl; font-size: 0.9rem; color: #ffbc9f; margin-bottom: 5px; }
+        .item-desc { font-size: 0.8rem; color: #bbb; display: block; margin-top: 5px; }
+        
+        .action-area { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+        .price-box { color: var(--accent); font-weight: 700; font-size: 0.95rem; }
+
+        .price-select {
+            background: #3d3d3d; color: var(--accent); border: 1px solid var(--primary);
+            padding: 5px; border-radius: 8px; font-size: 0.85rem; font-family: inherit; font-weight: 700;
+        }
+
+        .btn-add {
+            background: var(--primary); color: white; border: none; padding: 8px 15px;
+            border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+
+        #cart-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: #151515;
+            padding: 15px 20px; border-top: 3px solid var(--primary);
+            display: none; justify-content: space-between; align-items: center; z-index: 999;
+        }
+
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.95); overflow-y: auto;
+        }
+        .modal-content {
+            background: #1a1a1a; margin: 5% auto; padding: 20px; width: 90%; max-width: 500px;
+            border-radius: 20px; border: 1px solid var(--primary); color: white;
+        }
+        .close-modal { float: right; font-size: 30px; cursor: pointer; color: var(--primary); }
+        
+        .cart-item-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid #333;
+        }
+        .remove-btn-small { color: var(--danger); font-weight: bold; cursor: pointer; padding: 5px; }
+
+        .form-group { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .form-group label { font-weight: 600; color: var(--primary); }
+        .form-group input, .form-group select, .form-group textarea {
+            background: #222; border: 1px solid #444; color: white; padding: 12px; border-radius: 8px; font-family: inherit;
+        }
+        .hidden { display: none; }
+
+        .checkout-final-btn {
+            background: #25D366; color: white; border: none; width: 100%; padding: 15px;
+            border-radius: 50px; font-weight: bold; font-size: 1.1rem; margin-top: 20px; cursor: pointer;
+        }
+
+        .footer-info { text-align: center; padding: 40px 20px 120px; background: #151515; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <h1>SMASH N' CUP</h1>
+        <p>OPEN DAILY 12PM - 12AM</p>
+        <small>MAZBOUD - MAIN ROAD</small>
+    </div>
+
+    <div class="container">
+
+        <div class="category-header"><h2>Burgers</h2></div>
+        
+        <div class="menu-card" data-name="Original Smashed">
+            <div class="item-top">
+                <div><span class="item-title">Original Smashed</span><span class="item-arabic">برغر الاوريجينال</span></div>
+                <div class="action-area">
+                    <select class="price-select">
+                        <option value="400000" data-size="Single">S: 400,000 L.L</option>
+                        <option value="550000" data-size="Double">D: 550,000 L.L</option>
+                        <option value="600000" data-size="Triple">T: 600,000 L.L</option>
+                    </select>
+                    <button class="btn-add" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Smashed Beef, cheddar slice, pickles, caramelized onions, iceberg, Smashed sauce.</span>
+        </div>
+
+        <div class="menu-card" data-name="Spicy Smashed">
+            <div class="item-top">
+                <div><span class="item-title">Spicy Smashed</span><span class="item-arabic">برغر سبايسي</span></div>
+                <div class="action-area">
+                    <select class="price-select">
+                        <option value="400000" data-size="Single">S: 400,000 L.L</option>
+                        <option value="550000" data-size="Double">D: 550,000 L.L</option>
+                        <option value="600000" data-size="Triple">T: 600,000 L.L</option>
+                    </select>
+                    <button class="btn-add" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Smashed Beef, cheddar slice, jalapeños, caramelized onions, iceberg, spicy sauce.</span>
+        </div>
+
+        <div class="menu-card" data-name="Mushroom Smashed">
+            <div class="item-top">
+                <div><span class="item-title">Mushroom Smashed</span><span class="item-arabic">برغر صوص فطر</span></div>
+                <div class="action-area">
+                    <select class="price-select">
+                        <option value="500000" data-size="Single">S: 500,000 L.L</option>
+                        <option value="650000" data-size="Double">D: 650,000 L.L</option>
+                        <option value="700000" data-size="Triple">T: 700,000 L.L</option>
+                    </select>
+                    <button class="btn-add" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Smashed Beef, Emmental slice, swiss cheese, iceberg, fresh mushroom, white sauce.</span>
+        </div>
+
+        <div class="menu-card" data-name="American Burger">
+            <div class="item-top">
+                <div><span class="item-title">American Burger</span><span class="item-arabic">برغر أميركية</span></div>
+                <div class="action-area">
+                    <span class="price-box">500,000 L.L</span>
+                    <button class="btn-add" data-price="500000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">150g Beef patty, American cheese, lettuce, pickles, tomato, onion, mustard, ketchup, mayo.</span>
+        </div>
+
+        <div class="menu-card" data-name="Zinger Burger">
+            <div class="item-top">
+                <div><span class="item-title">Zinger Burger</span><span class="item-arabic">زينجر برغر</span></div>
+                <div class="action-area">
+                    <span class="price-box">450,000 L.L</span>
+                    <button class="btn-add" data-price="450000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Chicken zinger, iceberg, pickles, tomato, zinger sauce, cheddar.</span>
+        </div>
+
+        <div class="menu-card" data-name="Honey Mustard Burger">
+            <div class="item-top">
+                <div><span class="item-title">Honey Mustard Burger</span><span class="item-arabic">هاني ماسترد برغر</span></div>
+                <div class="action-area">
+                    <span class="price-box">500,000 L.L</span>
+                    <button class="btn-add" data-price="500000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Crunchy chicken, iceberg, honey mustard sauce, mayonnaise.</span>
+        </div>
+
+        <div class="category-header"><h2>Sandwich Menu</h2></div>
+        
+        <div class="menu-card" data-name="Twister">
+            <div class="item-top">
+                <div><span class="item-title">Twister</span><span class="item-arabic">تويستر</span></div>
+                <div class="action-area">
+                    <span class="price-box">450,000 L.L</span>
+                    <button class="btn-add" data-price="450000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Crispy chicken tenders, Fresh lettuce, Tomato, Cheddar cheese.</span>
+        </div>
+
+        <div class="menu-card" data-name="Boneless">
+            <div class="item-top">
+                <div><span class="item-title">Boneless</span><span class="item-arabic">بونليس</span></div>
+                <div class="action-area">
+                    <span class="price-box">500,000 L.L</span>
+                    <button class="btn-add" data-price="500000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Boneless chicken, Lettuce, Tomato, chips, Sauce (MAYO, BBQ, BUFFALO).</span>
+        </div>
+
+        <div class="menu-card" data-name="Grilled Chicken BBQ">
+            <div class="item-top">
+                <div><span class="item-title">Grilled Chicken BBQ</span><span class="item-arabic">دجاج بالموزاريلا والباربيكيو</span></div>
+                <div class="action-area">
+                    <span class="price-box">450,000 L.L</span>
+                    <button class="btn-add" data-price="450000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Grilled chicken, mozzarella, BBQ, pickles, iceberg.</span>
+        </div>
+
+        <div class="menu-card" data-name="Hunger Zinger">
+            <div class="item-top">
+                <div><span class="item-title">Hunger Zinger</span><span class="item-arabic">زينجر سبيشل</span></div>
+                <div class="action-area">
+                    <span class="price-box">600,000 L.L</span>
+                    <button class="btn-add" data-price="600000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Wrap, Crunchy chicken, iceberg, pickles, Mozzarella patty, cheddar, zinger sauce, tomato.</span>
+        </div>
+
+        <div class="category-header"><h2>Pasta</h2></div>
+        
+        <div class="menu-card" data-name="Chicken Alfredo">
+            <div class="item-top">
+                <div><span class="item-title">Chicken Alfredo</span><span class="item-arabic">تشيكن ألفريدو</span></div>
+                <div class="action-area">
+                    <span class="price-box">650,000 L.L</span>
+                    <button class="btn-add" data-price="650000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Grilled chicken, Creamy Alfredo sauce, Mushrooms, Butter, Parmesan cheese</span>
+        </div>
+
+        <div class="menu-card" data-name="Penne Arrabbiata">
+            <div class="item-top">
+                <div><span class="item-title">Penne Arrabbiata</span><span class="item-arabic">بني أرابياتا</span></div>
+                <div class="action-area">
+                    <span class="price-box">650,000 L.L</span>
+                    <button class="btn-add" data-price="650000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Penne pasta, Spicy tomato sauce, garlic, olive oil, fresh herbs</span>
+        </div>
+
+        <div class="menu-card" data-name="Pesto Pasta">
+            <div class="item-top">
+                <div><span class="item-title">Pesto Pasta</span><span class="item-arabic">بيستو باستا</span></div>
+                <div class="action-area">
+                    <span class="price-box">650,000 L.L</span>
+                    <button class="btn-add" data-price="650000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Penne pasta, Fresh creamy Pesto sauce</span>
+        </div>
+
+        <div class="menu-card" data-name="Mac And Cheese">
+            <div class="item-top">
+                <div><span class="item-title">Mac And Cheese</span><span class="item-arabic">ماك أند تشيز</span></div>
+                <div class="action-area">
+                    <span class="price-box">650,000 L.L</span>
+                    <button class="btn-add" data-price="650000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Elbow pasta, Cheddar cheese, Mozzarella, Parmesan cheese</span>
+        </div>
+
+        <div class="category-header"><h2>Boxes</h2></div>
+
+        <div class="menu-card" data-name="Smash N' Cup Box">
+            <div class="item-top">
+                <div><span class="item-title">Smash N' Cup Box</span><span class="item-arabic">سماش بوكس</span></div>
+                <div class="action-area">
+                    <span class="price-box">1,000,000 L.L</span>
+                    <button class="btn-add" data-price="1000000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">1 Burger, pasta, fries, Our Signature Mix.</span>
+        </div>
+
+        <div class="menu-card" data-name="Crispy Box">
+            <div class="item-top">
+                <div><span class="item-title">Crispy Box</span><span class="item-arabic">كرسبي بوكس</span></div>
+                <div class="action-area">
+                    <span class="price-box">650,000 L.L</span>
+                    <button class="btn-add" data-price="650000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">5 pcs crispy, Fries, Coleslaw, garlic, Pickles.</span>
+        </div>
+
+        <div class="menu-card" data-name="Wings Box">
+            <div class="item-top">
+                <div><span class="item-title">Wings Box</span><span class="item-arabic">بوكس جوانح</span></div>
+                <div class="action-area">
+                    <span class="price-box">600,000 L.L</span>
+                    <button class="btn-add" data-price="600000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">12 pcs of wings Dipped, Fries, dip</span>
+        </div>
+
+        <div class="menu-card" data-name="Loaded Chicken">
+            <div class="item-top">
+                <div><span class="item-title">Loaded Chicken</span><span class="item-arabic">دجاج كرانشي وبطاطا</span></div>
+                <div class="action-area">
+                    <span class="price-box">500,000 L.L</span>
+                    <button class="btn-add" data-price="500000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Fries, crispy strips on top, sauce</span>
+        </div>
+
+        <div class="menu-card" data-name="Loaded Smashed">
+            <div class="item-top">
+                <div><span class="item-title">Loaded Smashed</span><span class="item-arabic">لحمة سماش وبطاطا</span></div>
+                <div class="action-area">
+                    <span class="price-box">600,000 L.L</span>
+                    <button class="btn-add" data-price="600000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Fries, Smashed beef on top, sauce</span>
+        </div>
+
+        <div class="menu-card" data-name="Kids Meal">
+            <div class="item-top">
+                <div><span class="item-title">Kids Meal</span><span class="item-arabic">وجبة أطفال</span></div>
+                <div class="action-area">
+                    <span class="price-box">500,000 L.L</span>
+                    <button class="btn-add" data-price="500000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">5 pcs nuggets, 1 pc crispy, fries, dips</span>
+        </div>
+
+        <div class="category-header"><h2>Salads</h2></div>
+        
+        <div class="menu-card" data-name="Chicken Caesar Salad">
+            <div class="item-top">
+                <div><span class="item-title">Chicken Caesar Salad</span><span class="item-arabic">سلطة السيزر</span></div>
+                <div class="action-area">
+                    <span class="price-box">500,000 L.L</span>
+                    <button class="btn-add" data-price="500000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Crab, iceberg, cucumber, carrots, sweetcorn, crab dressing</span>
+        </div>
+
+        <div class="menu-card" data-name="Rocca Salad">
+            <div class="item-top">
+                <div><span class="item-title">Rocca Salad</span><span class="item-arabic">سلطة روكا</span></div>
+                <div class="action-area">
+                    <span class="price-box">500,000 L.L</span>
+                    <button class="btn-add" data-price="500000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">Rocca, onions, olive oil, parmesan, signature sauce</span>
+        </div>
+
+        <div class="menu-card" data-name="Coleslaw Salad">
+            <div class="item-top">
+                <div><span class="item-title">Coleslaw Salad</span><span class="item-arabic">سلطة المايونيز</span></div>
+                <div class="action-area">
+                    <span class="price-box">150,000 L.L</span>
+                    <button class="btn-add" data-price="150000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">White cabbage, carrots, signature sauce</span>
+        </div>
+
+        <div class="category-header"><h2>Appetizers</h2></div>
+
+        <div class="menu-card" data-name="Smashitizer Combo">
+            <div class="item-top">
+                <div><span class="item-title">Smashitizer Combo</span><span class="item-arabic">سماشيتيزر كومبو</span></div>
+                <div class="action-area">
+                    <span class="price-box">900,000 L.L</span>
+                    <button class="btn-add" data-price="900000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">3 mozzarella sticks, 3 cheese balls, 3 jalapeños Bites, 3 onion rings, 6 wings, fries.</span>
+        </div>
+
+        <div class="menu-card" data-name="Mozzarella Sticks">
+            <div class="item-top">
+                <div><span class="item-title">Mozzarella Sticks</span></div>
+                <div class="action-area">
+                    <span class="price-box">400,000 L.L</span>
+                    <button class="btn-add" data-price="400000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+            <span class="item-desc">6 pcs mozzarella sticks</span>
+        </div>
+
+        <div class="menu-card" data-name="Wedges">
+            <div class="item-top">
+                <div><span class="item-title">Wedges</span></div>
+                <div class="action-area">
+                    <span class="price-box">350,000 L.L</span>
+                    <button class="btn-add" data-price="350000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-card" data-name="Fries">
+            <div class="item-top">
+                <div><span class="item-title">Fries</span></div>
+                <div class="action-area">
+                    <span class="price-box">200,000 L.L</span>
+                    <button class="btn-add" data-price="200000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-header"><h2>Drinks & Dips</h2></div>
+        
+        <div class="menu-card" data-name="Drink">
+            <div class="item-top">
+                <div><span class="item-title">Soft Drinks / Ice Tea / Rim Sparkling</span></div>
+                <div class="action-area">
+                    <select class="price-select">
+                        <option value="90000" data-size="Pepsi">Pepsi</option>
+                        <option value="90000" data-size="7up">7up</option>
+                        <option value="90000" data-size="Mirinda">Mirinda</option>
+                        <option value="90000" data-size="Pepsi Diet">Pepsi Diet</option>
+                        <option value="90000" data-size=" 7up Diet">7up Diet</option>
+                        <option value="90000" data-size="Peach Ice Tea">Peach Ice Tea</option>
+                        <option value="90000" data-size="Lemon Ice Tea">Lemon Ice Tea</option>
+                        <option value="90000" data-size="Rim Sparkling">Rim Sparkling</option>
+                    </select>
+                    <button class="btn-add" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-card" data-name="Water">
+            <div class="item-top">
+                <div><span class="item-title">Water</span></div>
+                <div class="action-area">
+                    <span class="price-box">30,000 L.L</span>
+                    <button class="btn-add" data-price="30000" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-card" data-name="Extra Dip">
+            <div class="item-top">
+                <div><span class="item-title">Extra Dips</span></div>
+                <div class="action-area">
+                    <select class="price-select">
+                        <option value="50000" data-size="Cheddar">Cheddar</option>
+                        <option value="50000" data-size="Cocktail">Cocktail</option>
+                        <option value="50000" data-size="Honey Mustard">Honey Mustard</option>
+                        <option value="50000" data-size="Ranch">Ranch</option>
+                        <option value="50000" data-size="BBQ">BBQ</option>
+                        <option value="50000" data-size="Buffalo">Buffalo</option>
+                        <option value="50000" data-size="Smashed Sauce">Smashed Sauce</option>
+                    </select>
+                    <button class="btn-add" onclick="addToCart(this)">ADD +</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-card" data-name="Mozzarella Patty " style="padding: 10px 15px; border-style: dashed;">
+            <div class="item-top" style="align-items: center;">
+                <div><span class="item-title" style="font-size: 0.95rem; color: #eee;">Mozzarella Patty </span></div>
+                <div class="action-area" style="flex-direction: column; align-items: center; gap: 5px;">
+                    <span class="price-box" style="font-size: 0.85rem;">180,000 L.L</span>
+                    <button class="btn-add" data-price="180000" onclick="addToCart(this)" style="padding: 4px 12px; font-size: 0.75rem;">ADD +</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-info">
+        <h3>SMASH N' CUP</h3>
+        <p>Location: Mazboud / Main Road</p>
+        <p>Delivery: 78 954828</p>
+    </div>
+
+    <div id="cart-bar">
+        <div class="cart-info">
+            <span id="cart-count">0</span> Items<br>
+            Total: <span id="cart-total">0</span> L.L
+        </div>
+        <button class="btn-add" style="padding: 12px 25px; border-radius: 50px;" onclick="openCart()">VIEW CART</button>
+    </div>
+
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeCart()">×</span>
+            <h2 style="color: var(--primary); margin-top: 0;">Review Order</h2>
+            <div id="modal-items-list"></div>
+            <div class="form-group">
+                <label>Dining Option:</label>
+                <select id="order-type" onchange="toggleLocationFields()">
+                    <option value="Dine-in">Dine-in</option>
+                    <option value="Takeaway">Takeaway (Pickup)</option>
+                    <option value="Delivery">Delivery</option>
+                </select>
+            </div>
+            <div id="delivery-fields" class="hidden">
+                <div class="form-group"><label>Full Name:</label><input type="text" id="cust-name"></div>
+                <div class="form-group"><label>Address:</label><textarea id="cust-address"></textarea></div>
+            </div>
+            <div class="form-group">
+                <label>Special Instructions (e.g. Add Patty to Burger):</label>
+                <textarea id="order-note" placeholder="Write any extra details here..."></textarea>
+            </div>
+            <button class="checkout-final-btn" onclick="requestOrder()">SEND TO WHATSAPP</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+
+        function addToCart(btn) {
+            const card = btn.closest('.menu-card');
+            const itemName = card.getAttribute('data-name');
+            let price = 0;
+            let choiceText = "";
+
+            const selector = card.querySelector('.price-select');
+            if (selector) {
+                price = parseInt(selector.value);
+                choiceText = " (" + selector.options[selector.selectedIndex].getAttribute('data-size') + ")";
+            } else {
+                price = parseInt(btn.getAttribute('data-price'));
+            }
+
+            cart.push({ name: itemName + choiceText, price: price });
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartBar = document.getElementById('cart-bar');
+            document.getElementById('cart-count').innerText = cart.length;
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('cart-total').innerText = total.toLocaleString();
+            cartBar.style.display = cart.length > 0 ? 'flex' : 'none';
+        }
+
+        function openCart() {
+            const list = document.getElementById('modal-items-list');
+            list.innerHTML = '';
+            cart.forEach((item, index) => {
+                list.innerHTML += `
+                    <div class="cart-item-row">
+                        <span>${item.name}</span>
+                        <span>${item.price.toLocaleString()} L.L <span class="remove-btn-small" onclick="removeItem(${index})">✕</span></span>
+                    </div>`;
+            });
+            document.getElementById('cartModal').style.display = 'block';
+        }
+
+        function closeCart() { document.getElementById('cartModal').style.display = 'none'; }
+        function removeItem(index) { cart.splice(index, 1); if (cart.length === 0) closeCart(); openCart(); updateCartUI(); }
+        
+        function toggleLocationFields() {
+            const type = document.getElementById('order-type').value;
+            document.getElementById('delivery-fields').className = (type === 'Delivery') ? '' : 'hidden';
+        }
+
+        function requestOrder() {
+            const type = document.getElementById('order-type').value;
+            if (type === 'Delivery') {
+                if (!document.getElementById('cust-name').value || !document.getElementById('cust-address').value) {
+                    alert("Name and Address are required!"); return;
+                }
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => sendFinalMessage(type, pos.coords.latitude, pos.coords.longitude),
+                        () => sendFinalMessage(type, null, null)
+                    );
+                } else { sendFinalMessage(type, null, null); }
+            } else { sendFinalMessage(type, null, null); }
+        }
+
+        function sendFinalMessage(type, lat, lon) {
+            const phoneNumber = "96178954828";
+            const note = document.getElementById('order-note').value;
+            let message = `🍔 *New Order (${type})* \n\n`;
+            cart.forEach((item, index) => { message += `${index + 1}. ${item.name} - ${item.price.toLocaleString()} L.L\n`; });
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            message += `\n💰 *TOTAL: ${total.toLocaleString()} L.L*`;
+            if (note.trim()) message += `\n\n📝 *Notes/Instructions:* ${note}`;
+            if (type === 'Delivery') {
+                message += `\n👤 *Customer:* ${document.getElementById('cust-name').value}`;
+                message += `\n🏠 *Address:* ${document.getElementById('cust-address').value}`;
+                if (lat && lon) message += `\n📍 *Location:* https://www.google.com/maps?q=${lat},${lon}`;
+            }
+            window.location.href = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        }
+    </script>
+</body>
+</html>
